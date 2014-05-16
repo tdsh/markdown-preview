@@ -1,13 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import sys
 import os
+import argparse
 import time
 from datetime import datetime
 import markdown2
 import webbrowser
 import re
+
+from config_file import mdv_conf
+
+CONFIG_FILE = '/etc/mdv.conf'
 
 
 def check_strikethrough(line, index):
@@ -63,8 +67,36 @@ def convert_gfm(content):
     return final
 
 
-def main(markdown_file):
-    infile = file(markdown_file, 'r')
+def main():
+    parser = argparse.ArgumentParser(description=u'preview markdown file via \
+                                     terminal.')
+    parser.add_argument('file', type=str,
+                        help='markdown file')
+    parser.add_argument('-d', '--default', help='use default directory',
+                        action='store_true')
+    args = parser.parse_args()
+
+    # load mdv config
+    config_file = mdv_conf(CONFIG_FILE)
+    default_dir = ''
+    try:
+        config_file.read()
+    except Exception as msg:
+        print('Failed to open mdv config file %s: %s',
+              CONFIG_FILE, msg)
+    else:
+        if args.default:
+            try:
+                default_dir = config_file.get('DefaultDir')
+            except KeyError:
+                pass
+            else:
+                if default_dir is None:
+                    default_dir = ''
+                elif default_dir[-1] != '/':
+                    default_dir += '/'
+
+    infile = file(default_dir + args.file, 'r')
     outfile = '/tmp/md-' + str(int(time.mktime(datetime.now().timetuple()))) +\
               '.html'
     md = markdown2.Markdown()
@@ -82,8 +114,4 @@ def main(markdown_file):
 
 
 if __name__ == '__main__':
-    if len(sys.argv) != 2:
-        print 'tyes'
-        print 'Usage: %s <Markdown file>\n' % sys.argv[0]
-        sys.exit(1)
-    main(sys.argv[1])
+    main()
