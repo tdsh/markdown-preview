@@ -96,7 +96,12 @@ def main():
                 elif default_dir[-1] != '/':
                     default_dir += '/'
 
-    infile = file(default_dir + args.file, 'r')
+    try:
+        infile = file(default_dir + args.file, 'r')
+    except Exception as msg:
+        print 'Failed to open file: %s' % msg
+        print 'Please specify markdown file\n'
+        return
     outfile = '/tmp/md-' + str(int(time.mktime(datetime.now().timetuple()))) +\
               '.html'
     md = markdown2.Markdown()
