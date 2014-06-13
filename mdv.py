@@ -8,10 +8,9 @@ from datetime import datetime
 import markdown2
 import webbrowser
 import re
+import yaml
 
-from config_file import mdv_conf
-
-CONFIG_FILE = '/etc/mdv.conf'
+CONFIG_FILE = '/etc/mdv.yaml'
 
 
 def check_strikethrough(line, index):
@@ -77,30 +76,28 @@ def main():
     args = parser.parse_args()
 
     # load mdv config
-    config_file = mdv_conf(CONFIG_FILE)
-    default_dir = ''
     try:
-        config_file.read()
+        config_file = open(CONFIG_FILE, 'r')
     except Exception as msg:
         print('Failed to open mdv config file %s: %s',
               CONFIG_FILE, msg)
     else:
-        if args.default:
-            try:
-                default_dir = config_file.get('DefaultDir')
-            except KeyError:
-                pass
-            else:
-                if default_dir is None:
-                    default_dir = ''
-                elif default_dir[-1] != '/':
-                    default_dir += '/'
+        config_data = yaml.safe_load(config_file)
+        config_file.close()
+        try:
+            default_directory = config_data['config']['default_directory']
+        except KeyError:
+            pass
+        else:
+            if default_directory is None:
+                default_directory = ''
+            elif default_directory[-1] != '/':
+                default_directory += '/'
 
     try:
-        infile = file(default_dir + args.file, 'r')
+        infile = file(default_directory + args.file, 'r')
     except Exception as msg:
         print 'Failed to open file: %s' % msg
-        print 'Please specify markdown file\n'
         return
     outfile = '/tmp/md-' + str(int(time.mktime(datetime.now().timetuple()))) +\
               '.html'

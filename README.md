@@ -14,7 +14,7 @@ Preview Markdown file via terminal.
 ### set up
 
 ```shell
-cp files/mdv.conf /etc
+cp files/mdv.yaml /etc
 cp files/mdv.bash /etc/bash-completion.d
 . /etc/bash-completion.d/mdv.bash
 complete -F _filedir_mdv mdv
@@ -30,7 +30,7 @@ mdv README.md
 ```
 
 Besides, you can set default directory where you store markdown files
-in /etc/mdv.conf.
+in /etc/mdv.yaml.
 
 ```shell
 DefaultDir = ~/work/project/ABC/doc
