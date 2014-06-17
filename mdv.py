@@ -84,9 +84,13 @@ def main():
     else:
         config_data = yaml.safe_load(config_file)
         config_file.close()
+
+    default_directory = ''
+    if args.default:
         try:
             default_directory = config_data['config']['default_directory']
         except KeyError:
+            # No entry fo default directory.
             pass
         else:
             if default_directory is None:
