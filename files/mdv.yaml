@@ -1,0 +1,8 @@
+# markdown preview config file
+
+# default directory
+# You can set default directory where you store markdown files
+# in advance.
+
+#config:
+#  default_directory: ~/documents
