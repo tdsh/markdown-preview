@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function
+from future.builtins import str
+
 import os
 import argparse
 import time
@@ -49,7 +52,7 @@ def convert_gfm(content):
     # Strikethrough
     strikethrough = re.findall('(~~).*(~~)', res, re.MULTILINE)
     num = len(strikethrough) * 2
-    print num
+    print(num)
     final = ''
     index = 1
     res = res.split('\n')
@@ -79,8 +82,9 @@ def main():
     try:
         config_file = open(CONFIG_FILE, 'r')
     except Exception as msg:
-        print('Failed to open mdv config file %s: %s',
-              CONFIG_FILE, msg)
+        print('Failed to open mdv config file {0}: {1}'.
+              format(CONFIG_FILE, msg))
+
     else:
         config_data = yaml.safe_load(config_file)
         config_file.close()
@@ -101,7 +105,7 @@ def main():
     try:
         infile = file(default_directory + args.file, 'r')
     except Exception as msg:
-        print 'Failed to open file: %s' % msg
+        print('Failed to open file: {0}'.format(msg))
         return
     outfile = '/tmp/md-' + str(int(time.mktime(datetime.now().timetuple()))) +\
               '.html'
